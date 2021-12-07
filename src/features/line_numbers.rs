@@ -10,6 +10,7 @@ use crate::features::side_by_side::ansifill::{self, ODD_PAD_CHAR};
 use crate::features::side_by_side::{Left, PanelSide, Right};
 use crate::features::OptionValueFunction;
 use crate::format::{self, Align, Placeholder};
+use crate::handlers::hunk::IS_WORD_DIFF;
 use crate::minusplus::*;
 use crate::style::Style;
 
@@ -112,7 +113,7 @@ pub fn format_and_paint_line_numbers<'a>(
     let mut formatted_numbers = Vec::new();
 
     let (emit_left, emit_right) = match (config.side_by_side, side_by_side_panel) {
-        (false, _) => (true, true),
+        (false, _) => (!*IS_WORD_DIFF, true),
         (true, Some(Left)) => (true, false),
         (true, Some(Right)) => (false, true),
         (true, None) => unreachable!(),
