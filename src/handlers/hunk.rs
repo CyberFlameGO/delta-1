@@ -33,7 +33,7 @@ impl<'a> StateMachine<'a> {
                 | State::HunkZero(_, _)
                 | State::HunkMinus(_, _)
                 | State::HunkPlus(_, _)
-        ) && !&*IS_WORD_DIFF
+        )
     }
 
     /// Handle a hunk line, i.e. a minus line, a plus line, or an unchanged line.
@@ -119,8 +119,9 @@ impl<'a> StateMachine<'a> {
     }
 
     fn maybe_raw_line(&self, n_parents: usize, non_raw_styles: &[style::Style]) -> Option<String> {
-        let emit_raw_line = self.config.inspect_raw_lines == cli::InspectRawLines::True
-            && style::line_has_style_other_than(&self.raw_line, non_raw_styles);
+        let emit_raw_line = *IS_WORD_DIFF
+            || self.config.inspect_raw_lines == cli::InspectRawLines::True
+                && style::line_has_style_other_than(&self.raw_line, non_raw_styles);
         if emit_raw_line {
             Some(self.painter.prepare_raw_line(&self.raw_line, n_parents))
         } else {
